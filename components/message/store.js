@@ -30,7 +30,8 @@ function removeMessage (id) {
     return Model.deleteOne({ 
         _id: id
     })
-}
+};
+
 module.exports = {
     get: getMessages,
     add: addMessage,
