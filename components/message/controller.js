@@ -1,5 +1,14 @@
 const store = require('./store');
 
+function getmessages (filterUser) { // using promesis
+    // console.log(user)
+    return new Promise((resolve, reject) => {
+        
+        console.log('[messageController]: Promise get resolved')
+        resolve(store.get(filterUser));
+    })
+};
+
 function addMessage (user, message) { // using promesis
     console.log(user, message)
     return new Promise((resolve, reject) => {
@@ -13,26 +22,44 @@ function addMessage (user, message) { // using promesis
             message,
             date: new Date()
         };
-        console.log('[messageController]: Promise resolved')
+        console.log('[messageController]: Promise post resolved')
         store.add(fullMessage);
         resolve(fullMessage);
     })
 };
 
-function getmessages () { // using promesis
-    // console.log(user)
-    return new Promise((resolve, reject) => {
-        // if (err) {
-        //     return reject('Solicitud No Aceptada')
-        // };
-        
-        console.log('[messageController]: Promise resolved')
-        const list = store.get();
-        resolve(list);
+function updateMessage (id, message) {
+    return new Promise(async (resolve, reject) => {
+        if (!id || !message) {
+            return reject('Invalid data');
+        }
+        const rta = await store.update(id, message)
+        if (rta instanceof Error) {
+            reject(rta.message)
+        }
+        resolve(rta)
     })
 };
 
+function deleteMessage (id) {
+    return new Promise( (resolve, reject) => {
+        if(!id) {
+            return reject('Invalid data');
+        }
+        store.remove(id)
+            .then(() => {
+                console.log('[messageController]: Promise delete resolved')
+                resolve()
+            })
+            .catch( e => {
+                console.log(`id: ${id} is ${e.messageFormat}`)
+                reject()
+            });
+    })
+}
 module.exports = {
     addMessage, 
-    getmessages
+    getmessages,
+    updateMessage,
+    deleteMessage
 }

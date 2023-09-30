@@ -7,7 +7,8 @@ function success (req, res, message, status) {
     })
 };
 
-function error (req, res, message, status) {
+function error (req, res, message, status, error) {
+    console.log(error)
     res.status(status || 500).send({
         error: message,
         data: ""
