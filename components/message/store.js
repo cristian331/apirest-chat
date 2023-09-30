@@ -24,12 +24,17 @@ async function getMessage (id) {
 }
 
 async function updateMessage (id, message) {
-    getMessage(id)
-        .then(origMsj => {
-            origMsj.message = message
-            return origMsj.save()
-        }
-    )
+    return new Promise((resolve, reject) => {
+        getMessage(id)
+            .then(origMsj => {
+                origMsj.message = message
+                resolve(origMsj.save())
+            })
+            .catch(err => {
+                console.log('[UpdateMessage] id not found')
+                reject(err)
+            })
+    })
 };
 
 function removeMessage (id) {
