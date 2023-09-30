@@ -1,6 +1,9 @@
 const express = require('express');     //importar libreria Express
 const bodyParser = require('body-parser');    //importar libreria body-parse para obtener datos del request
 
+const {MONGO_URI, conect} = require('./lib/mongoose');
+conect(MONGO_URI);
+
 const router = require('./network/routes');
 
 

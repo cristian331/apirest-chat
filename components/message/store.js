@@ -1,4 +1,3 @@
-const db = require('../../lib/mongoose');
 const Model = require('./model');
 
 async function getMessages (filterUser) {
