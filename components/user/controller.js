@@ -11,11 +11,15 @@ function addUser (name) {
     };
 
     return store.add(user);  // devuelvo la promesa que viene de la solicitud .save()
+};
+
+function getUsers () {
+    return store.get();
 }
 
 module.exports = {
     addUser, 
-    // getUser,
+    getUsers,
     // updateUser,
     // deleteUser
 }
