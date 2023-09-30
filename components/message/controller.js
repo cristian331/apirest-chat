@@ -1,8 +1,14 @@
 const store = require('./store');
 
-function getMessages (filterUser) { // get all messages or get all messager from a user
+function getMessages (filterBy, filterId) { // get all messages or get all messager from a user
     return new Promise((resolve, reject) => {
-        store.get(filterUser)
+        let filter = {};
+        if (filterId && filterBy == 'user') {
+            filter = { user: filterId }
+        } else if (filterId && filterBy == 'chat') {
+            filter = { chat: filterId }
+        }
+        store.get(filter)
             .then(data => {
                 console.log('[messageController]: Promise get resolved')
                 resolve(data);
@@ -28,15 +34,15 @@ function getMessageById (id) { // get a message by id
     })
 };
 
-function addMessage (user, message) { // using promesis
-    console.log(user, message)
+function addMessage (chat, user, message) { 
     return new Promise((resolve, reject) => {
-        if (!user || !message) {
-            console.error('[messageController]: no user or no message')
-            return reject('Solicitud No Aceptada')
+        if (!chat || !user || !message) {
+            console.error('[messageController]: no chat or no user or no message')
+            return reject('Solicitud No Aceptada - datos invalidos')
         };
         
         const fullMessage = {
+            chat,
             user,
             message,
             date: new Date()

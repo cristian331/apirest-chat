@@ -1,11 +1,7 @@
 const Model = require('./model');
 
-async function getMessages (filterUser) {
+async function getMessages (filter) {
     return new Promise((resolve, reject) => {
-        let filter = {};
-        if (filterUser) {
-            filter = { user: filterUser }
-        }
         Model.find(filter)
             .populate('user')
             .exec()
