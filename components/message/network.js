@@ -43,7 +43,6 @@ router.patch('/:id', (req, res) => {
     const text = req.body.message;
     controller.updateMessage(id, text)
     .then(data => {
-        console.log(data)
         response.success(req, res, data, 200)
     })
     .catch(e => {
