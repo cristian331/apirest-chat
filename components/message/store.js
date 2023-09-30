@@ -1,12 +1,17 @@
 const Model = require('./model');
 
 async function getMessages (filterUser) {
-    let filter = {};
-    if (filterUser) {
-        filter = { user: filterUser }
-    }
-    const messages = await Model.find(filter);
-    return messages;
+    return new Promise((resolve, reject) => {
+        let filter = {};
+        if (filterUser) {
+            filter = { user: filterUser }
+        }
+        Model.find(filter)
+            .populate('user')
+            .exec()
+            .then(populated => resolve(populated))
+            .catch(err => reject(err))
+    })
 };
 
 function addMessage (message) {
@@ -14,16 +19,17 @@ function addMessage (message) {
     myMessage.save();
 };
 
+async function getMessage (id) {
+    return Model.findOne({_id : id})
+}
+
 async function updateMessage (id, message) {
-    try {
-        const foundMessage = await Model.findById(id);
-        foundMessage.message = message;
-        const updateMessage = await foundMessage.save();
-        return updateMessage;
-    } catch (error) {
-        console.log('error mensaje no actulizado');
-        return new Error(error)
-    }
+    getMessage(id)
+        .then(origMsj => {
+            origMsj.message = message
+            return origMsj.save()
+        }
+    )
 };
 
 function removeMessage (id) {
@@ -34,6 +40,7 @@ function removeMessage (id) {
 
 module.exports = {
     get: getMessages,
+    getId: getMessage,
     add: addMessage,
     update: updateMessage,
     remove: removeMessage

@@ -6,13 +6,25 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
     const filterByUser = req.query.user || null;
-    controller.getmessages(filterByUser)
+    controller.getMessages(filterByUser)
     .then((list) => {
-        response.success(req, res, list, 201)
+        response.success(req, res, list, 200)
     })
     .catch(e => {
         console.log(e);
         response.error(req, res, 'Solicitud invalidad', 400)
+    })
+});
+
+router.get('/:id', (req, res) => {
+    const id = req.params.id || null;
+    controller.getMessageById(id)
+    .then((message) => {
+        response.success(req, res, message, 200)
+    })
+    .catch(e => {
+        console.log(e);
+        response.error(req, res, 'Internal Error', 500, e.message)
     })
 });
 
@@ -22,7 +34,7 @@ router.post('/', (req, res) => {
         response.success(req, res, fullMessage, 201)
     })
     .catch(e => {
-        response.error(req, res, 'Solicitud invalidad', 400)
+        response.error(req, res, 'Internal Error', 500, e.message)
     })
 });
 
@@ -30,9 +42,10 @@ router.patch('/:id', (req, res) => {
     const id = req.params.id;
     const text = req.body.message;
     controller.updateMessage(id, text)
-    .then(data => 
+    .then(data => {
+        console.log(data)
         response.success(req, res, data, 200)
-    )
+    })
     .catch(e => {
         response.error(req, res, 'Error interno', 500, e.message)
     });

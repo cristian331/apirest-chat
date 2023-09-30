@@ -1,11 +1,30 @@
 const store = require('./store');
 
-function getmessages (filterUser) { // using promesis
-    // console.log(user)
+function getMessages (filterUser) { // get all messages or get all messager from a user
     return new Promise((resolve, reject) => {
-        
-        console.log('[messageController]: Promise get resolved')
-        resolve(store.get(filterUser));
+        store.get(filterUser)
+            .then(data => {
+                console.log('[messageController]: Promise get resolved')
+                resolve(data);
+            })
+            .catch(err =>
+                reject(err)
+            )
+    })
+};
+
+function getMessageById (id) { // get a message by id
+    return new Promise((resolve, reject) => {
+        store.getId(id)
+            .then(data => {
+                console.log('[messageController]: Promise get resolved')
+                resolve(data);
+            })
+            .catch(err => {
+                console.log('[messageController]: Error id no Found')
+                reject(err.message)
+            }
+        )
     })
 };
 
@@ -31,13 +50,19 @@ function addMessage (user, message) { // using promesis
 function updateMessage (id, message) {
     return new Promise(async (resolve, reject) => {
         if (!id || !message) {
-            return reject('Invalid data');
+            return Promise.reject('Invalid data');
         }
-        const rta = await store.update(id, message)
-        if (rta instanceof Error) {
-            reject(rta.message)
-        }
-        resolve(rta)
+        store.update(id, message)
+            .then(() => {
+                console.log('[messageController]: Promise update resolved')
+                store.getId(id)
+                    .then(data => resolve(data))
+            })
+            .catch(err => {
+                console.log('Error: Mensaje no actualizado')
+                reject(err)
+            }
+        );
     })
 };
 
@@ -58,8 +83,9 @@ function deleteMessage (id) {
     })
 }
 module.exports = {
+    getMessages,
+    getMessageById,
     addMessage, 
-    getmessages,
     updateMessage,
     deleteMessage
 }
